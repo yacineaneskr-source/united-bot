@@ -6,9 +6,6 @@ from datetime import datetime
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-if not os.path.exists("vote_up.gif") or not os.path.exists("vote_down.gif"):
-    from gen_emojis import gen
-    gen()
 DATA_FILE = "suggestions.json"
 SUGGEST_CHANNEL = 1511027051388469478
 
@@ -74,28 +71,6 @@ class SugBot(discord.Client):
 
     async def on_ready(self):
         print(f"Ready as {bot.user}")
-        guild = None
-        for g in self.guilds:
-            for ch in g.channels:
-                if ch.id == SUGGEST_CHANNEL:
-                    guild = g
-                    break
-            if guild: break
-        if guild and guild.me.guild_permissions.manage_emojis:
-            for e in guild.emojis:
-                if e.name == "vote_up":
-                    self.up_e = e
-                if e.name == "vote_down":
-                    self.down_e = e
-            if not isinstance(self.up_e, discord.Emoji):
-                with open("vote_up.gif", "rb") as f:
-                    self.up_e = await guild.create_custom_emoji(name="vote_up", image=f.read())
-            if not isinstance(self.down_e, discord.Emoji):
-                with open("vote_down.gif", "rb") as f:
-                    self.down_e = await guild.create_custom_emoji(name="vote_down", image=f.read())
-            print(f"Using custom emojis: {self.up_e} / {self.down_e}")
-        else:
-            print("No manage_emojis permission, using Unicode")
         self.add_view(VoteView(self.up_e, self.down_e))
 
 bot = SugBot()
