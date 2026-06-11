@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+suggestions.json
+.DS_Store
